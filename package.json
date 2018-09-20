@@ -1,0 +1,41 @@
+{
+  "name": "apollo-link-prismic",
+  "version": "1.0.0",
+  "description": "Apollo link for Prismic",
+  "main": "dist/apollo-link-prismic.min.js",
+  "scripts": {
+    "build": "./node_modules/.bin/babel index.js > dist/apollo-link-prismic.min.js",
+    "prepublish": "npm run build",
+    "postinstall": "npm run build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/prismicio/apollo-link-prismic.git"
+  },
+  "keywords": [
+    "graphql",
+    "apollo",
+    "link",
+    "prismic"
+  ],
+  "author": "sebastien@prismic.io",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/prismicio/apollo-link-prismic/issues"
+  },
+  "homepage": "https://github.com/prismicio/apollo-link-prismic#readme",
+  "dependencies": {
+    "apollo-link": "^1.2.3",
+    "apollo-link-context": "^1.0.9",
+    "apollo-link-http": "^1.5.5",
+    "graphql": "^14.0.2",
+    "prismic-javascript": "^1.5.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.1.0",
+    "@babel/core": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "babel-preset-minify": "^0.4.3"
+  }
+}
