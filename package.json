@@ -6,7 +6,6 @@
   "scripts": {
     "build": "./node_modules/.bin/babel index.js > dist/apollo-link-prismic.min.js",
     "prepublish": "npm run build",
-    "postinstall": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
