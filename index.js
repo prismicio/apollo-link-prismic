@@ -2,19 +2,19 @@ import { HttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import Prismic from 'prismic-javascript';
 
-export function PrismicLink({uri, accessToken}) {
+export function PrismicLink({uri, accessToken, ...options}) {
   const BaseURIReg = /^(https?:\/\/.+?\..+?\..+?)\/graphql\/?$/;
   const matches = uri.match(BaseURIReg);
   if (matches && matches[1]) {
     const [_, baseURI] = matches;
     const prismicClient = Prismic.client(`${baseURI}/api`, { accessToken });
     const prismicLink = setContext(
-      (request, options) => {
+      (request, previousContext) => {
         return prismicClient.getApi().then((api) => {
           const authorizationHeader = accessToken ? { Authorization: `Token ${accessToken}` } : {};
           return {
             headers: {
-              ...options.headers,
+              ...previousContext.headers,
               ...authorizationHeader,
               'Prismic-ref': api.masterRef.ref,
             }
@@ -26,6 +26,7 @@ export function PrismicLink({uri, accessToken}) {
     const httpLink = new HttpLink({
       uri,
       useGETForQueries: true,
+      ...options,
     });
 
     return prismicLink.concat(httpLink);
