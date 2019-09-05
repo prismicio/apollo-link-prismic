@@ -1,1 +1,39 @@
-"use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.PrismicLink=PrismicLink,exports.default=void 0;var _apolloLinkHttp=require("apollo-link-http"),_apolloLinkContext=require("apollo-link-context"),_prismicJavascript=_interopRequireDefault(require("prismic-javascript"));function _interopRequireDefault(b){return b&&b.__esModule?b:{default:b}}function _objectSpread(e){for(var a=1;a<arguments.length;a++){var f=null==arguments[a]?{}:arguments[a],c=Object.keys(f);"function"==typeof Object.getOwnPropertySymbols&&(c=c.concat(Object.getOwnPropertySymbols(f).filter(function(b){return Object.getOwnPropertyDescriptor(f,b).enumerable}))),c.forEach(function(a){_defineProperty(e,a,f[a])})}return e}function _defineProperty(d,a,b){return a in d?Object.defineProperty(d,a,{value:b,enumerable:!0,configurable:!0,writable:!0}):d[a]=b,d}function _slicedToArray(c,a){return _arrayWithHoles(c)||_iterableToArrayLimit(c,a)||_nonIterableRest()}function _nonIterableRest(){throw new TypeError("Invalid attempt to destructure non-iterable instance")}function _iterableToArrayLimit(i,a){var b,j=[],c=!0,k=!1;try{for(var l,m=i[Symbol.iterator]();!(c=(l=m.next()).done)&&(j.push(l.value),!(a&&j.length===a));c=!0);}catch(c){k=!0,b=c}finally{try{c||null==m["return"]||m["return"]()}finally{if(k)throw b}}return j}function _arrayWithHoles(b){if(Array.isArray(b))return b}function PrismicLink(l){var a=l.uri,m=l.accessToken,b=/^(https?:\/\/.+?\..+?\..+?)\/graphql\/?$/,c=a.match(b);if(c&&c[1]){var d=_slicedToArray(c,2),e=d[0],f=d[1],g=_prismicJavascript.default.client("".concat(f,"/api"),{accessToken:m}),h=(0,_apolloLinkContext.setContext)(function(c,e){return g.getApi().then(function(b){var a=m?{Authorization:"Token ".concat(m)}:{};return{headers:_objectSpread({"Prismic-ref":b.masterRef.ref},e.headers,a)}})}),i=new _apolloLinkHttp.HttpLink({uri:a,useGETForQueries:!0});return h.concat(i)}throw new Error("".concat(a," isn't a valid Prismic GraphQL endpoint"))}var _default={PrismicLink:PrismicLink};exports.default=_default;
+import { HttpLink } from 'apollo-link-http';
+import { setContext } from 'apollo-link-context';
+import Prismic from 'prismic-javascript';
+
+export function PrismicLink({uri, accessToken}) {
+  const BaseURIReg = /^(https?:\/\/.+?\..+?\..+?)\/graphql\/?$/;
+  const matches = uri.match(BaseURIReg);
+  if (matches && matches[1]) {
+    const [_, baseURI] = matches;
+    const prismicClient = Prismic.client(`${baseURI}/api`, { accessToken });
+    const prismicLink = setContext(
+      (request, options) => {
+        return prismicClient.getApi().then((api) => {
+          const authorizationHeader = accessToken ? { Authorization: `Token ${accessToken}` } : {};
+          return {
+            headers: {
+              'Prismic-ref': api.masterRef.ref,
+              ...options.headers,
+              ...authorizationHeader
+            }
+          }
+        })
+      }
+    );
+
+    const httpLink = new HttpLink({
+      uri,
+      useGETForQueries: true,
+    });
+
+    return prismicLink.concat(httpLink);
+  } else {
+    throw new Error(`${uri} isn't a valid Prismic GraphQL endpoint`)
+  }
+}
+
+export default {
+  PrismicLink,
+}
