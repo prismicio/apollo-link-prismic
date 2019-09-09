@@ -14,9 +14,9 @@ export function PrismicLink({uri, accessToken}) {
           const authorizationHeader = accessToken ? { Authorization: `Token ${accessToken}` } : {};
           return {
             headers: {
-              ...options.headers,
-              ...authorizationHeader,
               'Prismic-ref': api.masterRef.ref,
+              ...options.headers,
+              ...authorizationHeader
             }
           }
         })
