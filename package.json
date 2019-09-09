@@ -1,6 +1,6 @@
 {
   "name": "apollo-link-prismic",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Apollo link for Prismic",
   "main": "dist/apollo-link-prismic.min.js",
   "scripts": {
