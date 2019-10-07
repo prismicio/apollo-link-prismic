@@ -29,9 +29,11 @@ export function PrismicLink({uri, accessToken}) {
       (request, options) => {
         return prismicClient.getApi().then((api) => {
           const authorizationHeader = accessToken ? { Authorization: `Token ${accessToken}` } : {};
+          const integrationFieldRef = api.integrationFieldRef ? { 'Prismic-integration-field-ref' : api.integrationFieldRef } : {};
           return {
             headers: {
               'Prismic-ref': api.masterRef.ref,
+              ...integrationFieldRef,
               ...options.headers,
               ...authorizationHeader
             }
