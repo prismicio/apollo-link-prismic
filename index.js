@@ -2,55 +2,68 @@ import { HttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import Prismic from 'prismic-javascript';
 
-const PRISMIC_ENDPOINT_REG = /^(https?):\/\/([^.]+)\.(cdn.)?([^.]+\.[^.]+)\/graphql\/?$/;
+const PRISMIC_ENDPOINT_REG = /^https?:\/\/([^.]+)\.(?:cdn.)?prismic.io\/graphql\/?/;
 
-function parseURI(endpoint) {
-  const [, protocol, repository, cdn, domain] = endpoint.match(PRISMIC_ENDPOINT_REG);
+function parseURI(endpointGraphQL) {
+  const tokens = endpointGraphQL.match(PRISMIC_ENDPOINT_REG);
 
-  if (protocol && repository && domain) {
+  if (tokens !== null && Array.isArray(tokens) && tokens.length === 2) {
+    const [/* endpoint */, repository] = tokens;
+
     return {
-      protocol,
-      repository,
-      domain,
+      isFromPrismicApi: true,
+      repository
     };
   }
 
-  return null;
+  return {
+    isFromPrismicApi: false,
+    endpointGraphQL
+  };
 }
 
-export function PrismicLink({uri, accessToken}) {
-  const parsedURI = parseURI(uri);
+export function PrismicLink({ uri, accessToken, repositoryName }) {
+  const {
+    isFromPrismicApi,
+    endpointGraphQL,
+    repository
+  } = parseURI(uri);
 
-  if (parseURI) {
-    const { protocol, repository, domain } = parsedURI;
-    const baseURI = `${protocol}://${repository}.cdn.${domain}`;
-    const prismicClient = Prismic.client(`${baseURI}/api`, { accessToken });
-    const prismicLink = setContext(
-      (request, options) => {
-        return prismicClient.getApi().then((api) => {
-          const authorizationHeader = accessToken ? { Authorization: `Token ${accessToken}` } : {};
-          return {
+  if (!isFromPrismicApi && !repositoryName) {
+    throw Error('Since you are using a custom GraphQL endpoint, you need to provide to PrismicLink your repository name as shown below:\n' +
+      'PrismicLink({\n' +
+      '  uri: \'https://mycustomdomain.com/graphql\',\n' +
+      '  accessToken: \'my_access_token\', // could be undefined\n' +
+      '  repositoryName: \'my-prismic-repository\'\n' +
+      '})\n'
+    );
+  }
+
+  const prismicClient = Prismic.client(`https://${isFromPrismicApi ? repository : repositoryName}.cdn.prismic.io/api`, { accessToken })
+
+  const prismicLink = setContext(
+    (request, options) => {
+      return prismicClient
+        .getApi()
+        .then(
+          (api) => ({
             headers: {
               'Prismic-ref': api.masterRef.ref,
               ...options.headers,
-              ...authorizationHeader
+              ...(accessToken ? { Authorization: `Token ${accessToken}` } : {})
             }
-          };
-        });
-      }
-    );
-
-    const httpLink = new HttpLink({
-      uri: `${baseURI}/graphql`,
-      useGETForQueries: true,
+          })
+        );
     });
 
-    return prismicLink.concat(httpLink);
-  } else {
-    throw new Error(`${uri} isn't a valid Prismic GraphQL endpoint`);
-  }
+  const httpLink = new HttpLink({
+    uri: isFromPrismicApi ? `https://${repository}.cdn.prismic.io/graphql` : endpointGraphQL,
+    useGETForQueries: true
+  });
+
+  return prismicLink.concat(httpLink);
 }
 
 export default {
-  PrismicLink,
+  PrismicLink
 };
