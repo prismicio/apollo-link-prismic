@@ -23,14 +23,6 @@ export function PrismicLink({ uri, accessToken, repositoryName }) {
   const prismicEndpoint = parsePrismicEndpoint(uri); // enforce cdn if it's the prismic endpoint
 
   if (!prismicEndpoint && !repositoryName) {
-    throw new Error("Please provide a valid repository name.");
-  }
-
-  const endpoint = prismicEndpoint || uri;
-  const apiEndpoint = `${endpoint}/api`;
-  const gqlEndpoint = `${endpoint}/graphql`;
-
-  if (!prismicEndpoint && !repositoryName) {
     throw Error('Since you are using a custom GraphQL endpoint, you need to provide to PrismicLink your repository name as shown below:\n' +
       'PrismicLink({\n' +
       '  uri: \'https://mycustomdomain.com/graphql\',\n' +
@@ -39,6 +31,10 @@ export function PrismicLink({ uri, accessToken, repositoryName }) {
       '})\n'
     );
   }
+
+  const endpoint = prismicEndpoint || uri;
+  const apiEndpoint = `${endpoint}/api`;
+  const gqlEndpoint = `${endpoint}/graphql`;
 
   const prismicClient = Prismic.client(apiEndpoint, { accessToken })
 
