@@ -2,34 +2,35 @@ import { HttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import Prismic from 'prismic-javascript';
 
-const PRISMIC_ENDPOINT_REG = /^https?:\/\/([^.]+)\.(?:cdn.)?prismic.io\/graphql\/?/;
+const PRISMIC_ENDPOINT_REG = /^https?:\/\/([^.]+)\.(?:cdn\.)?(wroom\.(?:test|io)|prismic\.io)\/graphql\/?/;
+//                                        ^                  ^
+//                                        1                  2
 
-function parseURI(endpointGraphQL) {
-  const tokens = endpointGraphQL.match(PRISMIC_ENDPOINT_REG);
+function parsePrismicEndpoint(endpoint) {
+  const tokens = endpoint.match(PRISMIC_ENDPOINT_REG);
 
-  if (tokens !== null && Array.isArray(tokens) && tokens.length === 2) {
-    const [/* endpoint */, repository] = tokens;
+  if (tokens !== null && Array.isArray(tokens) && tokens.length === 3) {
+    const [/* endpoint */, repository, domain] = tokens;
 
-    return {
-      isFromPrismicApi: true,
-      repository
-    };
+    return `https://${repository}.cdn.${domain}/graphql`; // enforce the cdn
   }
 
-  return {
-    isFromPrismicApi: false,
-    endpointGraphQL
-  };
+  return null; // not from prismic ? returns null.
 }
 
 export function PrismicLink({ uri, accessToken, repositoryName }) {
-  const {
-    isFromPrismicApi,
-    endpointGraphQL,
-    repository
-  } = parseURI(uri);
 
-  if (!isFromPrismicApi && !repositoryName) {
+  const prismicEndpoint = parsePrismicEndpoint(uri); // enforce cdn if it's the prismic endpoint
+
+  if (!prismicEndpoint && !repositoryName) {
+    throw new Error("Please provide a valid repository name.");
+  }
+
+  const endpoint = prismicEndpoint || uri;
+  const apiEndpoint = `${endpoint}/api`;
+  const gqlEndpoint = `${endpoint}/graphql`;
+
+  if (!prismicEndpoint && !repositoryName) {
     throw Error('Since you are using a custom GraphQL endpoint, you need to provide to PrismicLink your repository name as shown below:\n' +
       'PrismicLink({\n' +
       '  uri: \'https://mycustomdomain.com/graphql\',\n' +
@@ -39,7 +40,7 @@ export function PrismicLink({ uri, accessToken, repositoryName }) {
     );
   }
 
-  const prismicClient = Prismic.client(`https://${isFromPrismicApi ? repository : repositoryName}.cdn.prismic.io/api`, { accessToken })
+  const prismicClient = Prismic.client(apiEndpoint, { accessToken })
 
   const prismicLink = setContext(
     (request, options) => {
@@ -57,7 +58,7 @@ export function PrismicLink({ uri, accessToken, repositoryName }) {
     });
 
   const httpLink = new HttpLink({
-    uri: isFromPrismicApi ? `https://${repository}.cdn.prismic.io/graphql` : endpointGraphQL,
+    uri: gqlEndpoint,
     useGETForQueries: true
   });
 
