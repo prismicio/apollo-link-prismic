@@ -25,10 +25,14 @@
   },
   "homepage": "https://github.com/prismicio/apollo-link-prismic#readme",
   "dependencies": {
+    "apollo-boost": "^0.4.4",
+    "apollo-cache-inmemory": "^1.6.3",
+    "apollo-client": "^2.6.4",
     "apollo-link": "^1.2.3",
     "apollo-link-context": "^1.0.9",
-    "apollo-link-http": "^1.5.7",
-    "graphql": "^14.0.2",
+    "apollo-link-http": "^1.5.16",
+    "graphql": "^14.5.8",
+    "graphql-tag": "^2.10.1",
     "prismic-javascript": "^1.5.0"
   },
   "devDependencies": {

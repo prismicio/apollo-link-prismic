@@ -12,7 +12,7 @@ function parsePrismicEndpoint(endpoint) {
   if (tokens !== null && Array.isArray(tokens) && tokens.length === 3) {
     const [/* endpoint */, repository, domain] = tokens;
 
-    return `https://${repository}.cdn.${domain}/graphql`; // enforce the cdn
+    return `https://${repository}.cdn.${domain}`; // enforce the cdn
   }
 
   return null; // not from prismic ? returns null.
@@ -21,6 +21,10 @@ function parsePrismicEndpoint(endpoint) {
 export function PrismicLink({ uri, accessToken, repositoryName }) {
 
   const prismicEndpoint = parsePrismicEndpoint(uri); // enforce cdn if it's the prismic endpoint
+
+  if (prismicEndpoint && repositoryName) {
+    console.warn('\`repositoryName\` is ignored since the graphql endpoint is valid.');
+  }
 
   if (!prismicEndpoint && !repositoryName) {
     throw Error('Since you are using a custom GraphQL endpoint, you need to provide to PrismicLink your repository name as shown below:\n' +
@@ -32,11 +36,18 @@ export function PrismicLink({ uri, accessToken, repositoryName }) {
     );
   }
 
-  const endpoint = prismicEndpoint || uri;
-  const apiEndpoint = `${endpoint}/api`;
-  const gqlEndpoint = `${endpoint}/graphql`;
+  let apiEndpoint;
+  let gqlEndpoint;
 
-  const prismicClient = Prismic.client(apiEndpoint, { accessToken })
+  if (prismicEndpoint) {
+    apiEndpoint = `${prismicEndpoint}/api`;
+    gqlEndpoint = `${prismicEndpoint}/graphql`;
+  } else {
+    apiEndpoint = `https://${repositoryName}.cdn.prismic.io/api`;
+    gqlEndpoint = uri;
+  }
+
+  const prismicClient = Prismic.client(apiEndpoint, { accessToken });
 
   const prismicLink = setContext(
     (request, options) => {
