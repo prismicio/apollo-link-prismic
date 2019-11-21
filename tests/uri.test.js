@@ -60,7 +60,7 @@ describe('PrismicLink', () => {
         expect(body).toBeUndefined();
         expect(method).toBe('GET');
         expect(headers['Prismic-ref'] === apiData.refs[0].ref);
-        expect(uri).toBe("https://test.cdn.prismic.io/graphql?query=%7B%0A_allDocuments%20%7B%0Aedges%20%7B%0Anode%20%7B%0A_meta%20%7B%0Aid%0A%7D%0A%7D%0A%7D%0A%7D%0A%7D%0A&variables=%7B%7D");
+        expect(uri).toBe("https://test.cdn.prismic.io/graphql?query=%7B_allDocuments%7Bedges%7Bnode%7B_meta%7Bid%7D%7D%7D%7D%7D&variables=%7B%7D");
       }),
       error: error => done.fail(error),
     });
@@ -80,7 +80,7 @@ describe('PrismicLink', () => {
         expect(body).toBeUndefined();
         expect(method).toBe('GET');
         expect(headers['Prismic-ref'] === apiData.refs[0].ref);
-        expect(uri).toBe("https://my.website.com/graphql?query=%7B%0A_allDocuments%20%7B%0Aedges%20%7B%0Anode%20%7B%0A_meta%20%7B%0Aid%0A%7D%0A%7D%0A%7D%0A%7D%0A%7D%0A&variables=%7B%7D");
+        expect(uri).toBe("https://my.website.com/graphql?query=%7B_allDocuments%7Bedges%7Bnode%7B_meta%7Bid%7D%7D%7D%7D%7D&variables=%7B%7D");
       }),
       error: error => done.fail(error),
     });
