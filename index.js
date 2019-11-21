@@ -1,6 +1,7 @@
 import { HttpLink } from 'apollo-link-http';
 import { setContext } from 'apollo-link-context';
 import Prismic from 'prismic-javascript';
+import removeWhiteSpace from './lib/removeWhiteSpace';
 
 const PRISMIC_ENDPOINT_REG = /^https?:\/\/([^.]+)\.(?:cdn\.)?(wroom\.(?:test|io)|prismic\.io)\/graphql\/?/;
 //                                        ^                  ^
@@ -66,7 +67,11 @@ export function PrismicLink({ uri, accessToken, repositoryName }) {
 
   const httpLink = new HttpLink({
     uri: gqlEndpoint,
-    useGETForQueries: true
+    useGETForQueries: true,
+    fetch: (url, options) => {
+      const trimmed = removeWhiteSpace(url);
+      return fetch(trimmed, options)
+    }
   });
 
   return prismicLink.concat(httpLink);
