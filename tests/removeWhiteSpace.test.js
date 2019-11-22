@@ -5,21 +5,38 @@ import { experimentCookie } from 'prismic-javascript';
 
 describe("lib/removeWhiteSpace should replace repeated white space characters with a single white space characte", () => {
     it("double space", () => {
-        const input = encodeURIComponent("double  space");
-        const output = encodeURIComponent("double space");
+        const input = "?query=" + encodeURIComponent("double  space");
+        const output = "?query=" + encodeURIComponent("double space");
         const result = removeWhiteSpace(input);
         expect(result).toBe(output);
     });
-    xit("double tabs", () => {
-        const input = encodeURIComponent("double\t\ttabs");
-        const output = encodeURIComponent("double\ttabs");
+    
+    it("query as last param", () => {
+        const input = "?foo=bar&query=" + encodeURIComponent(`{
+            thing
+        }`);
+        const output = "?foo=bar&query=" + encodeURIComponent("{thing}");
         const result = removeWhiteSpace(input);
         expect(result).toBe(output);
     });
 
-    xit("double newline", () => {
-        const input = encodeURIComponent("double\n\nnewline");
-        const output = encodeURIComponent("double\nnewline");
+    it("query in the middle", () => {
+        const [prefix, query, suffix] = [
+            `{
+                bar 
+            }`,
+            `{
+                africa
+            }`,
+            `{
+                toto
+            }`
+        ];
+        const input = '?first=' + encodeURIComponent(prefix) + '&query=' + encodeURIComponent(query) + '&variables=' + encodeURIComponent(suffix);
+        const output = "?first=" + encodeURIComponent(prefix) + 
+        '&query=' + encodeURIComponent(query.replace(/\s/g, '')) +
+        '&variables=' + encodeURIComponent(suffix);
+
         const result = removeWhiteSpace(input);
         expect(result).toBe(output);
     });
@@ -32,7 +49,7 @@ describe("lib/removeWhiteSpace should replace repeated white space characters wi
     });
 
     it("no match", () => {
-        const input = encodeURIComponent("no match");
+        const input = "https://www.example.com/";
         const output = input;
         const result = removeWhiteSpace(input);
         expect(result).toBe(input);
