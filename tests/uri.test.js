@@ -1,6 +1,6 @@
 import { Observable, ApolloLink, execute } from 'apollo-link';
 import fetchMock from 'fetch-mock';
-import { PrismicLink } from '../index';
+import { PrismicLink } from '../src/index';
 import gql from 'graphql-tag';
 
 const makeCallback = (done, body) => {

@@ -1,4 +1,4 @@
-import removeWhiteSpace from '../lib/removeWhiteSpace';
+import removeWhiteSpace from '../src/lib/removeWhiteSpace';
 import { isObjectType } from 'graphql';
 import { isTSAnyKeyword } from '@babel/types';
 import { experimentCookie } from 'prismic-javascript';
@@ -10,7 +10,7 @@ describe("lib/removeWhiteSpace should replace repeated white space characters wi
         const result = removeWhiteSpace(input);
         expect(result).toBe(output);
     });
-    
+
     it("query as last param", () => {
         const input = "?foo=bar&query=" + encodeURIComponent(`{
             thing
@@ -23,7 +23,7 @@ describe("lib/removeWhiteSpace should replace repeated white space characters wi
     it("query in the middle", () => {
         const [prefix, query, suffix] = [
             `{
-                bar 
+                bar
             }`,
             `{
                 africa
@@ -33,7 +33,7 @@ describe("lib/removeWhiteSpace should replace repeated white space characters wi
             }`
         ];
         const input = '?first=' + encodeURIComponent(prefix) + '&query=' + encodeURIComponent(query) + '&variables=' + encodeURIComponent(suffix);
-        const output = "?first=" + encodeURIComponent(prefix) + 
+        const output = "?first=" + encodeURIComponent(prefix) +
         '&query=' + encodeURIComponent(query.replace(/\s/g, '')) +
         '&variables=' + encodeURIComponent(suffix);
 
@@ -50,10 +50,9 @@ describe("lib/removeWhiteSpace should replace repeated white space characters wi
 
     it("no match", () => {
         const input = "https://www.example.com/";
-        const output = input;
         const result = removeWhiteSpace(input);
         expect(result).toBe(input);
     })
 
-    
+
 });
