@@ -57,6 +57,7 @@ export function PrismicLink({ uri, accessToken, repositoryName }) {
           (api) => ({
             headers: {
               'Prismic-ref': api.masterRef.ref,
+              ...integrationFieldRef,
               ...options.headers,
               ...(accessToken ? { Authorization: `Token ${accessToken}` } : {})
             }
