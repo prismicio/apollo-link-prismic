@@ -1,6 +1,6 @@
 import { Observable, ApolloLink, execute } from 'apollo-link';
 import fetchMock from 'fetch-mock';
-import { PrismicLink } from '../index';
+import { PrismicLink } from '../src/index';
 import gql from 'graphql-tag';
 
 const makeCallback = (done, body) => {
@@ -60,9 +60,7 @@ describe('PrismicLink', () => {
         expect(body).toBeUndefined();
         expect(method).toBe('GET');
         expect(headers['Prismic-ref'] === apiData.refs[0].ref);
-        expect(uri).toBe(
-          'https://test.cdn.prismic.io/graphql?query=%7B%0A%20%20_allDocuments%20%7B%0A%20%20%20%20edges%20%7B%0A%20%20%20%20%20%20node%20%7B%0A%20%20%20%20%20%20%20%20_meta%20%7B%0A%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A&variables=%7B%7D'
-        );
+        expect(uri).toBe("https://test.cdn.prismic.io/graphql?query=%7B_allDocuments%7Bedges%7Bnode%7B_meta%7Bid%7D%7D%7D%7D%7D&variables=%7B%7D");
       }),
       error: error => done.fail(error),
     });
@@ -82,9 +80,7 @@ describe('PrismicLink', () => {
         expect(body).toBeUndefined();
         expect(method).toBe('GET');
         expect(headers['Prismic-ref'] === apiData.refs[0].ref);
-        expect(uri).toBe(
-          'https://my.website.com/graphql?query=%7B%0A%20%20_allDocuments%20%7B%0A%20%20%20%20edges%20%7B%0A%20%20%20%20%20%20node%20%7B%0A%20%20%20%20%20%20%20%20_meta%20%7B%0A%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%0A%20%20%7D%0A%7D%0A&variables=%7B%7D'
-        );
+        expect(uri).toBe("https://my.website.com/graphql?query=%7B_allDocuments%7Bedges%7Bnode%7B_meta%7Bid%7D%7D%7D%7D%7D&variables=%7B%7D");
       }),
       error: error => done.fail(error),
     });
