@@ -19,7 +19,7 @@ function parsePrismicEndpoint(endpoint) {
   return null; // not from prismic ? returns null.
 }
 
-export function PrismicLink({ uri, accessToken, repositoryName }) {
+export function PrismicLink({ uri, accessToken, repositoryName, ...options }) {
 
   const prismicEndpoint = parsePrismicEndpoint(uri); // enforce cdn if it's the prismic endpoint
 
@@ -51,14 +51,14 @@ export function PrismicLink({ uri, accessToken, repositoryName }) {
   const prismicClient = Prismic.client(apiEndpoint, { accessToken });
 
   const prismicLink = setContext(
-    (request, options) => {
+    (request, previousContext) => {
       return prismicClient
         .getApi()
         .then(
           (api) => ({
             headers: {
               'Prismic-ref': api.masterRef.ref,
-              ...options.headers,
+              ...previousContext.headers,
               ...(api.integrationFieldRef ? { 'Prismic-integration-field-ref' : api.integrationFieldRef } : {}),
               ...(accessToken ? { Authorization: `Token ${accessToken}` } : {})
             }
@@ -72,7 +72,8 @@ export function PrismicLink({ uri, accessToken, repositoryName }) {
     fetch: (url, options) => {
       const trimmed = removeWhiteSpace(url);
       return fetch(trimmed, options)
-    }
+    },
+    ...options
   });
 
   return prismicLink.concat(httpLink);
