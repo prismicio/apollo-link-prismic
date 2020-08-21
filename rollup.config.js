@@ -1,4 +1,5 @@
-import minify from 'rollup-plugin-babel-minify';
+import babel from '@rollup/plugin-babel';
+import { terser } from "rollup-plugin-terser";
 
 const options = {
   input: './src/index.js',
@@ -7,11 +8,8 @@ const options = {
     file: './dist/apollo-link-prismic.min.js',
   },
   plugins: [
-    minify({
-      // Options for babel-minify.
-      sourceMap: false,
-      comments: false,
-    })
+    babel({ babelHelpers: 'bundled' }),
+    terser()
   ],
 };
 
