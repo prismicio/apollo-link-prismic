@@ -8,6 +8,11 @@ const PRISMIC_ENDPOINT_REG = /^https?:\/\/([^.]+)\.(?:cdn\.)?(wroom\.(?:test|io)
 //                                        1                  2
 
 function parsePrismicEndpoint(endpoint) {
+
+    if (endpoint === undefined) {
+    throw new Error('no uri provided')
+  }
+
   const tokens = endpoint.match(PRISMIC_ENDPOINT_REG);
 
   if (tokens !== null && Array.isArray(tokens) && tokens.length === 3) {
