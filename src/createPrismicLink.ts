@@ -7,25 +7,79 @@ import {
 	createClient,
 } from "@prismicio/client";
 
+/**
+ * Configuration for `createPrismicLink`.
+ */
 export type PrismicLinkConfig = Omit<
 	HttpOptions,
 	"fetch" | "useGETForQueries"
 > & {
+	/**
+	 * The name of the link's Prismic repository.
+	 */
 	repositoryName: string;
+
+	/**
+	 * The access token for the link's Prismic repository.
+	 */
 	accessToken?: string;
+
+	/**
+	 * The Rest API endpoint for the link's Prismic repository. If a value is not
+	 * given, the link will use the default Prismic Rest API endpoint for the
+	 * link's Prismic repository using the `repositoryName` parameter.
+	 */
 	apiEndpoint?: string;
+
+	/**
+	 * The GraphQL API endpoint for the link's Prismic repository. If a value is
+	 * not given, the link will use the default Prismic GraphQL API endpoint for
+	 * the link's Prismic repository using the `repositoryName` parameter.
+	 */
 	uri?: string;
+
+	/**
+	 * The function used to make network requests to the Prismic API. In
+	 * environments where a global `fetch` function does not exist, such as
+	 * Node.js, this function must be provided.
+	 */
 	fetch?: FetchLike;
 };
 
-export const createPrismicLink = ({
-	repositoryName,
-	fetch,
-	accessToken,
-	apiEndpoint: providedApiEndpoint,
-	uri: providedURI,
-	...options
-}: PrismicLinkConfig): ApolloLink => {
+/**
+ * Creates an Apollo Link that sends GraphQL queries to a Prismic repository's
+ * GraphQL API.
+ *
+ * @example
+ *
+ * ```ts
+ * import { ApolloClient, InMemoryCache } from "@apollo/client";
+ * import { createPrismicLink } from "apollo-link-prismic";
+ *
+ * const client = new ApolloClient({
+ * 	link: createPrismicLink({
+ * 		repositoryName: "your-repo-name",
+ * 		// Provide an access token if the repository is secured.
+ * 		accessToken: "example-access-token",
+ * 	}),
+ * 	cache: new InMemoryCache(),
+ * });
+ * ```
+ *
+ * @param config - Configuration for the Prismic Link.
+ *
+ * @returns An Apollo Link for the configured Prismic repository's GraphQL API.
+ */
+export const createPrismicLink = (config: PrismicLinkConfig): ApolloLink => {
+	const {
+		repositoryName,
+		fetch,
+		accessToken,
+		apiEndpoint: providedApiEndpoint,
+		uri: providedURI,
+		...options
+	} = config;
+
 	const uri = providedURI || getGraphQLEndpoint(repositoryName);
 	const apiEndpoint = providedApiEndpoint || getEndpoint(repositoryName);
 
