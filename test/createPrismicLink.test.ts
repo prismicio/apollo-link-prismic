@@ -52,7 +52,7 @@ const repositoryResponse: Partial<prismicT.Repository> = {
 test("creates an HTTP Link", async (t) => {
 	const repositoryName = "qwerty";
 	const apiEndpoint = prismic.getEndpoint(repositoryName);
-	const graphQLEndpoint = prismic.getGraphQLEndpoint(repositoryName);
+	const uri = prismic.getGraphQLEndpoint(repositoryName);
 
 	const query = gql`
 		query {
@@ -66,7 +66,7 @@ test("creates an HTTP Link", async (t) => {
 
 		if (url === apiEndpoint) {
 			return new Response(JSON.stringify(repositoryResponse));
-		} else if (`${instance.origin}${instance.pathname}` === graphQLEndpoint) {
+		} else if (`${instance.origin}${instance.pathname}` === uri) {
 			t.is(instance.searchParams.get("query"), compressedQuery);
 
 			return new Response(
@@ -94,7 +94,7 @@ test("creates an HTTP Link", async (t) => {
 test("supports custom API endpoint (for Rest API)", async (t) => {
 	const repositoryName = "qwerty";
 	const apiEndpoint = "https://example.com/";
-	const graphQLEndpoint = prismic.getGraphQLEndpoint(repositoryName);
+	const uri = prismic.getGraphQLEndpoint(repositoryName);
 
 	const query = gql`
 		query {
@@ -108,7 +108,7 @@ test("supports custom API endpoint (for Rest API)", async (t) => {
 
 		if (url === apiEndpoint) {
 			return new Response(JSON.stringify(repositoryResponse));
-		} else if (`${instance.origin}${instance.pathname}` === graphQLEndpoint) {
+		} else if (`${instance.origin}${instance.pathname}` === uri) {
 			t.is(instance.searchParams.get("query"), compressedQuery);
 
 			return new Response(
@@ -137,7 +137,7 @@ test("supports custom API endpoint (for Rest API)", async (t) => {
 test("supports custom GraphQL endpoint", async (t) => {
 	const repositoryName = "qwerty";
 	const apiEndpoint = prismic.getEndpoint(repositoryName);
-	const graphQLEndpoint = "https://example.com/";
+	const uri = "https://example.com/";
 
 	const query = gql`
 		query {
@@ -151,7 +151,7 @@ test("supports custom GraphQL endpoint", async (t) => {
 
 		if (url === apiEndpoint) {
 			return new Response(JSON.stringify(repositoryResponse));
-		} else if (`${instance.origin}${instance.pathname}` === graphQLEndpoint) {
+		} else if (`${instance.origin}${instance.pathname}` === uri) {
 			t.is(instance.searchParams.get("query"), compressedQuery);
 
 			return new Response(
@@ -168,7 +168,7 @@ test("supports custom GraphQL endpoint", async (t) => {
 
 	const link = createPrismicLink({
 		repositoryName,
-		graphQLEndpoint,
+		uri,
 		fetch,
 	});
 
