@@ -1,20 +1,27 @@
 # apollo-link-prismic
 
 ## Purpose
-An Apollo Link that allow you query the Prismic GraphQL API with [apollo-client](https://www.apollographql.com/client/).
+
+An Apollo Link that allow you query Prismic's GraphQL API with [apollo-client](https://www.apollographql.com/client/).
 
 ## Installation
-`npm install apollo-link-prismic --save`
+
+```
+npm install apollo-link-prismic
+```
 
 ## Usage
-```js
-import { PrismicLink } from 'apollo-link-prismic';
+
+```javascript
+import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { createPrismicLink } from "apollo-link-prismic";
 
 const apolloClient = new ApolloClient({
-  link: PrismicLink({
-    uri: "YOUR_GRAPHQL_ENDPOINT",
-    accessToken: "YOUR_ACCESS_TOKEN",
-  }),
-  cache: new InMemoryCache()
+	link: createPrismicLink({
+		repositoryName: "YOUR_REPOSITORY_NAME",
+		// Provide your access token if your repository is secured.
+		accessToken: "YOUR_ACCESS_TOKEN",
+	}),
+	cache: new InMemoryCache(),
 });
 ```
