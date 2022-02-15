@@ -51,6 +51,7 @@
 		"@prismicio/client": "^6.2.0"
 	},
 	"devDependencies": {
+		"@apollo/client": "^3.5.8",
 		"@prismicio/types": "^0.1.24",
 		"@size-limit/preset-small-lib": "^7.0.8",
 		"@types/node-fetch": "^2.6.0",
