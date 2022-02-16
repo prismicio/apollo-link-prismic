@@ -1,8 +1,8 @@
 import type { ApolloLink, HttpOptions } from "@apollo/client/core";
-import type { FetchLike } from "@prismicio/client";
+import { FetchLike, getRepositoryName } from "@prismicio/client";
 import { createHttpLink } from "@apollo/client/core";
 import {
-	getEndpoint,
+	getRepositoryEndpoint,
 	getGraphQLEndpoint,
 	createClient,
 } from "@prismicio/client";
@@ -72,7 +72,7 @@ export type PrismicLinkConfig = Omit<
  */
 export const createPrismicLink = (config: PrismicLinkConfig): ApolloLink => {
 	const {
-		repositoryName,
+		repositoryName: providedRepositoryName,
 		fetch,
 		accessToken,
 		apiEndpoint: providedApiEndpoint,
@@ -80,8 +80,15 @@ export const createPrismicLink = (config: PrismicLinkConfig): ApolloLink => {
 		...options
 	} = config;
 
+	let repositoryName = providedRepositoryName;
+
+	if (!repositoryName && providedURI) {
+		repositoryName = getRepositoryName(providedURI);
+	}
+
 	const uri = providedURI || getGraphQLEndpoint(repositoryName);
-	const apiEndpoint = providedApiEndpoint || getEndpoint(repositoryName);
+	const apiEndpoint =
+		providedApiEndpoint || getRepositoryEndpoint(repositoryName);
 
 	const client = createClient(apiEndpoint, {
 		fetch,

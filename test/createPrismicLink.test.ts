@@ -91,6 +91,51 @@ test("creates an HTTP Link", async (t) => {
 	t.plan(1);
 });
 
+test("supports only a uri option", async (t) => {
+	const repositoryName = "qwerty";
+	const apiEndpoint = prismic.getEndpoint(repositoryName);
+	const uri = prismic.getGraphQLEndpoint(repositoryName);
+
+	const query = gql`
+		query {
+			foo
+		}
+	`;
+	const compressedQuery = `{foo}`;
+
+	const fetch = sinon.stub().callsFake((url) => {
+		const instance = new URL(url);
+
+		if (url === apiEndpoint) {
+			return new Response(JSON.stringify(repositoryResponse));
+		} else if (`${instance.origin}${instance.pathname}` === uri) {
+			t.is(instance.searchParams.get("query"), compressedQuery);
+
+			return new Response(
+				JSON.stringify({
+					data: {
+						foo: "bar",
+					},
+				}),
+			);
+		} else {
+			return new Response("{}", { status: 404 });
+		}
+	});
+
+	const link = createPrismicLink(
+		// @ts-expect-error - Purposely not providing a repositoryName to simulate a non-TS environment.
+		{
+			uri,
+			fetch,
+		},
+	);
+
+	await executeRequest(link, { query });
+
+	t.plan(1);
+});
+
 test("supports custom API endpoint (for Rest API)", async (t) => {
 	const repositoryName = "qwerty";
 	const apiEndpoint = "https://example.com/";
