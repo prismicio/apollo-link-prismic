@@ -32,7 +32,7 @@ If you are using this link in an environment where a global `fetch` function doe
 
 Environments like the browser, [Next.js](https://nextjs.org/), [Cloudflare Workers](https://workers.cloudflare.com/), and [Remix](https://remix.run/) provide a global `fetch` function and do not require passing your own.
 
-There are many libraries that can provide this function. The most common is `node-fetch`, which you would configure like this:
+There are many libraries that can provide this function. The most common is [`node-fetch`](https://www.npmjs.com/package/node-fetch), which you would configure like this:
 
 ```typescript
 import { ApolloClient, InMemoryCache } from "@apollo/client";
