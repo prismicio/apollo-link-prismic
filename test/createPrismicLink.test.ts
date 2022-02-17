@@ -49,7 +49,7 @@ const repositoryResponse: Partial<prismicT.Repository> = {
 	],
 };
 
-test("creates an HTTP Link", async (t) => {
+test("creates an HTTP Link from a repositoryName", async (t) => {
 	const repositoryName = "qwerty";
 	const apiEndpoint = prismic.getEndpoint(repositoryName);
 	const uri = prismic.getGraphQLEndpoint(repositoryName);
@@ -123,17 +123,31 @@ test("supports only a uri option", async (t) => {
 		}
 	});
 
-	const link = createPrismicLink(
-		// @ts-expect-error - Purposely not providing a repositoryName to simulate a non-TS environment.
-		{
-			uri,
-			fetch,
-		},
-	);
+	const link = createPrismicLink({
+		uri,
+		fetch,
+	});
 
 	await executeRequest(link, { query });
 
 	t.plan(1);
+});
+
+test("throws if neither a repositoryName or uri option is given", (t) => {
+	t.throws(
+		() => {
+			createPrismicLink(
+				// @ts-expect-error - Purposely leaving off a repositoryName and uri option to throw the runtime error.
+				{
+					fetch: sinon.stub(),
+				},
+			);
+		},
+		{
+			message:
+				/At least one of the following options are required for createPrismicLink\(\): repositoryName, uri/,
+		},
+	);
 });
 
 test("supports custom API endpoint (for Rest API)", async (t) => {

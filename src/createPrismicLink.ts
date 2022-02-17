@@ -13,38 +13,56 @@ import {
 export type PrismicLinkConfig = Omit<
 	HttpOptions,
 	"fetch" | "useGETForQueries"
-> & {
-	/**
-	 * The name of the link's Prismic repository.
-	 */
-	repositoryName: string;
+> &
+	(
+		| {
+				/**
+				 * The name of the link's Prismic repository.
+				 */
+				repositoryName: string;
 
-	/**
-	 * The access token for the link's Prismic repository.
-	 */
-	accessToken?: string;
+				/**
+				 * The GraphQL API endpoint for the link's Prismic repository. If a
+				 * value is not given, the link will use the default Prismic GraphQL API
+				 * endpoint for the link's Prismic repository using the `repositoryName`
+				 * parameter.
+				 */
+				uri?: string;
+		  }
+		| {
+				/**
+				 * The name of the link's Prismic repository.
+				 */
+				repositoryName?: string;
 
-	/**
-	 * The Rest API endpoint for the link's Prismic repository. If a value is not
-	 * given, the link will use the default Prismic Rest API endpoint for the
-	 * link's Prismic repository using the `repositoryName` parameter.
-	 */
-	apiEndpoint?: string;
+				/**
+				 * The GraphQL API endpoint for the link's Prismic repository. If a
+				 * value is not given, the link will use the default Prismic GraphQL API
+				 * endpoint for the link's Prismic repository using the `repositoryName`
+				 * parameter.
+				 */
+				uri: string;
+		  }
+	) & {
+		/**
+		 * The access token for the link's Prismic repository.
+		 */
+		accessToken?: string;
 
-	/**
-	 * The GraphQL API endpoint for the link's Prismic repository. If a value is
-	 * not given, the link will use the default Prismic GraphQL API endpoint for
-	 * the link's Prismic repository using the `repositoryName` parameter.
-	 */
-	uri?: string;
+		/**
+		 * The Rest API endpoint for the link's Prismic repository. If a value is
+		 * not given, the link will use the default Prismic Rest API endpoint for
+		 * the link's Prismic repository using the `repositoryName` parameter.
+		 */
+		apiEndpoint?: string;
 
-	/**
-	 * The function used to make network requests to the Prismic API. In
-	 * environments where a global `fetch` function does not exist, such as
-	 * Node.js, this function must be provided.
-	 */
-	fetch?: FetchLike;
-};
+		/**
+		 * The function used to make network requests to the Prismic API. In
+		 * environments where a global `fetch` function does not exist, such as
+		 * Node.js, this function must be provided.
+		 */
+		fetch?: FetchLike;
+	};
 
 /**
  * Creates an Apollo Link that sends GraphQL queries to a Prismic repository's
@@ -84,6 +102,12 @@ export const createPrismicLink = (config: PrismicLinkConfig): ApolloLink => {
 
 	if (!repositoryName && providedURI) {
 		repositoryName = getRepositoryName(providedURI);
+	}
+
+	if (!repositoryName) {
+		throw new Error(
+			"At least one of the following options are required for createPrismicLink(): repositoryName, uri. If a repositoryName option is not given, the uri option must be a standard, non-proxied Prismic GraphQL API URL including the repository name.",
+		);
 	}
 
 	const uri = providedURI || getGraphQLEndpoint(repositoryName);
