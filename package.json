@@ -48,7 +48,7 @@
 		"unit": "nyc --reporter=lcovonly --reporter=text --exclude-after-remap=false ava"
 	},
 	"dependencies": {
-		"@prismicio/client": "^6.4.1-alpha.1"
+		"@prismicio/client": "^6.4.1"
 	},
 	"devDependencies": {
 		"@apollo/client": "^3.5.8",
