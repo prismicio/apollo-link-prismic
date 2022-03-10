@@ -48,6 +48,7 @@ const repositoryResponse: Partial<prismicT.Repository> = {
 		},
 	],
 };
+const ref = repositoryResponse.refs?.[0].ref as string;
 
 test("creates an HTTP Link from a repositoryName", async (t) => {
 	const repositoryName = "qwerty";
@@ -68,6 +69,7 @@ test("creates an HTTP Link from a repositoryName", async (t) => {
 			return new Response(JSON.stringify(repositoryResponse));
 		} else if (`${instance.origin}${instance.pathname}` === uri) {
 			t.is(instance.searchParams.get("query"), compressedQuery);
+			t.is(instance.searchParams.get("ref"), ref);
 
 			return new Response(
 				JSON.stringify({
@@ -88,7 +90,7 @@ test("creates an HTTP Link from a repositoryName", async (t) => {
 
 	await executeRequest(link, { query });
 
-	t.plan(1);
+	t.plan(2);
 });
 
 test("supports only a uri option", async (t) => {
@@ -110,6 +112,7 @@ test("supports only a uri option", async (t) => {
 			return new Response(JSON.stringify(repositoryResponse));
 		} else if (`${instance.origin}${instance.pathname}` === uri) {
 			t.is(instance.searchParams.get("query"), compressedQuery);
+			t.is(instance.searchParams.get("ref"), ref);
 
 			return new Response(
 				JSON.stringify({
@@ -130,7 +133,7 @@ test("supports only a uri option", async (t) => {
 
 	await executeRequest(link, { query });
 
-	t.plan(1);
+	t.plan(2);
 });
 
 test("throws if neither a repositoryName or uri option is given", (t) => {
@@ -169,6 +172,7 @@ test("supports custom API endpoint (for Rest API)", async (t) => {
 			return new Response(JSON.stringify(repositoryResponse));
 		} else if (`${instance.origin}${instance.pathname}` === uri) {
 			t.is(instance.searchParams.get("query"), compressedQuery);
+			t.is(instance.searchParams.get("ref"), ref);
 
 			return new Response(
 				JSON.stringify({
@@ -190,7 +194,7 @@ test("supports custom API endpoint (for Rest API)", async (t) => {
 
 	await executeRequest(link, { query });
 
-	t.plan(1);
+	t.plan(2);
 });
 
 test("supports custom GraphQL endpoint", async (t) => {
@@ -212,6 +216,7 @@ test("supports custom GraphQL endpoint", async (t) => {
 			return new Response(JSON.stringify(repositoryResponse));
 		} else if (`${instance.origin}${instance.pathname}` === uri) {
 			t.is(instance.searchParams.get("query"), compressedQuery);
+			t.is(instance.searchParams.get("ref"), ref);
 
 			return new Response(
 				JSON.stringify({
@@ -233,5 +238,5 @@ test("supports custom GraphQL endpoint", async (t) => {
 
 	await executeRequest(link, { query });
 
-	t.plan(1);
+	t.plan(2);
 });

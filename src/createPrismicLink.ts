@@ -121,7 +121,7 @@ export const createPrismicLink = (config: PrismicLinkConfig): ApolloLink => {
 
 	return createHttpLink({
 		uri,
-		fetch: client.graphqlFetch,
+		fetch: client.graphQLFetch,
 		useGETForQueries: true,
 		...options,
 	});
