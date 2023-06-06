@@ -52,7 +52,7 @@ const ref = repositoryResponse.refs?.[0].ref as string;
 
 test("creates an HTTP Link from a repositoryName", async (t) => {
 	const repositoryName = "qwerty";
-	const apiEndpoint = prismic.getEndpoint(repositoryName);
+	const apiEndpoint = prismic.getRepositoryEndpoint(repositoryName);
 	const uri = prismic.getGraphQLEndpoint(repositoryName);
 
 	const query = gql`
@@ -62,7 +62,7 @@ test("creates an HTTP Link from a repositoryName", async (t) => {
 	`;
 	const compressedQuery = `{foo}`;
 
-	const fetch = sinon.stub().callsFake((url) => {
+	const fetch = sinon.stub().callsFake(async (url) => {
 		const instance = new URL(url);
 
 		if (url === apiEndpoint) {
@@ -95,7 +95,7 @@ test("creates an HTTP Link from a repositoryName", async (t) => {
 
 test("supports only a uri option", async (t) => {
 	const repositoryName = "qwerty";
-	const apiEndpoint = prismic.getEndpoint(repositoryName);
+	const apiEndpoint = prismic.getRepositoryEndpoint(repositoryName);
 	const uri = prismic.getGraphQLEndpoint(repositoryName);
 
 	const query = gql`
@@ -105,7 +105,7 @@ test("supports only a uri option", async (t) => {
 	`;
 	const compressedQuery = `{foo}`;
 
-	const fetch = sinon.stub().callsFake((url) => {
+	const fetch = sinon.stub().callsFake(async (url) => {
 		const instance = new URL(url);
 
 		if (url === apiEndpoint) {
@@ -165,7 +165,7 @@ test("supports custom API endpoint (for Rest API)", async (t) => {
 	`;
 	const compressedQuery = `{foo}`;
 
-	const fetch = sinon.stub().callsFake((url) => {
+	const fetch = sinon.stub().callsFake(async (url) => {
 		const instance = new URL(url);
 
 		if (url === apiEndpoint) {
@@ -199,7 +199,7 @@ test("supports custom API endpoint (for Rest API)", async (t) => {
 
 test("supports custom GraphQL endpoint", async (t) => {
 	const repositoryName = "qwerty";
-	const apiEndpoint = prismic.getEndpoint(repositoryName);
+	const apiEndpoint = prismic.getRepositoryEndpoint(repositoryName);
 	const uri = "https://example.com/";
 
 	const query = gql`
@@ -209,7 +209,7 @@ test("supports custom GraphQL endpoint", async (t) => {
 	`;
 	const compressedQuery = `{foo}`;
 
-	const fetch = sinon.stub().callsFake((url) => {
+	const fetch = sinon.stub().callsFake(async (url) => {
 		const instance = new URL(url);
 
 		if (url === apiEndpoint) {

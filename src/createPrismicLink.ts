@@ -1,7 +1,8 @@
 import type { ApolloLink, HttpOptions } from "@apollo/client/core";
-import { FetchLike, getRepositoryName } from "@prismicio/client";
 import { createHttpLink } from "@apollo/client/core";
 import {
+	FetchLike,
+	getRepositoryName,
 	getRepositoryEndpoint,
 	getGraphQLEndpoint,
 	createClient,
