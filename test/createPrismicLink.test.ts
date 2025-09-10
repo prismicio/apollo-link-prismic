@@ -1,10 +1,10 @@
 import test from "ava";
 import {
+	ApolloClient,
 	ApolloLink,
 	execute,
-	FetchResult,
 	gql,
-	GraphQLRequest,
+	InMemoryCache,
 } from "@apollo/client/core";
 import { Response } from "node-fetch";
 import * as sinon from "sinon";
@@ -14,27 +14,31 @@ import * as prismicT from "@prismicio/types";
 import { createPrismicLink } from "../src";
 
 interface LinkResult<T> {
-	result: FetchResult<T>;
+	result: ApolloLink.Result<T>;
 }
 
 const executeRequest = <T = unknown>(
 	link: ApolloLink,
-	request: GraphQLRequest,
+	request: ApolloLink.Request,
 ) => {
 	const linkResult = {} as LinkResult<T>;
+	const client = new ApolloClient({
+		cache: new InMemoryCache(),
+		link: ApolloLink.empty(),
+	});
 
 	return new Promise<LinkResult<T>>((resolve, reject) => {
-		execute(link, request).subscribe(
-			(result) => {
-				linkResult.result = result as FetchResult<T>;
+		execute(link, request, { client }).subscribe({
+			next: (result) => {
+				linkResult.result = result as ApolloLink.Result<T>;
 			},
-			(error) => {
+			error: (error) => {
 				reject(error);
 			},
-			() => {
+			complete: () => {
 				resolve(linkResult);
 			},
-		);
+		});
 	});
 };
 

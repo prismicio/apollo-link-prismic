@@ -1,5 +1,5 @@
-import type { ApolloLink, HttpOptions } from "@apollo/client/core";
-import { createHttpLink } from "@apollo/client/core";
+import type { ApolloLink } from "@apollo/client/core";
+import { HttpLink } from "@apollo/client/link/http";
 import {
 	FetchLike,
 	getRepositoryName,
@@ -12,7 +12,7 @@ import {
  * Configuration for `createPrismicLink`.
  */
 export type PrismicLinkConfig = Omit<
-	HttpOptions,
+	HttpLink.Options,
 	"fetch" | "useGETForQueries"
 > &
 	(
@@ -120,7 +120,7 @@ export const createPrismicLink = (config: PrismicLinkConfig): ApolloLink => {
 		accessToken,
 	});
 
-	return createHttpLink({
+	return new HttpLink({
 		uri,
 		fetch: client.graphQLFetch,
 		useGETForQueries: true,
