@@ -1,5 +1,4 @@
-import type { ApolloLink, HttpOptions } from "@apollo/client/core"
-import { createHttpLink } from "@apollo/client/core"
+import { type ApolloLink, createHttpLink, type HttpOptions } from "@apollo/client/core"
 import {
 	type FetchLike,
 	getRepositoryName,
