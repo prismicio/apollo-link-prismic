@@ -49,13 +49,13 @@
 		"test": "npm run lint && npm run types && npm run unit && npm run build"
 	},
 	"dependencies": {
-		"@prismicio/client": "^7.0.1"
+		"@prismicio/client": "^7.21.7"
 	},
 	"devDependencies": {
 		"@apollo/client": "^3.5.8",
 		"@types/node": "^25.5.2",
 		"@vitest/coverage-v8": "^4.1.2",
-		"graphql": "^16.3.0",
+		"graphql": "^16.13.2",
 		"oxfmt": "^0.43.0",
 		"oxlint": "^1.58.0",
 		"tsdown": "^0.21.7",
