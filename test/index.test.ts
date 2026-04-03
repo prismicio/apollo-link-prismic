@@ -1,7 +1,7 @@
-import test from "ava";
+import { expect, it } from "vitest"
 
-import { createPrismicLink, PrismicLink } from "../src";
+import { createPrismicLink, PrismicLink } from "../src"
 
-test("PrismicLink is a temporary alias for createPrismicLink", (t) => {
-	t.is(PrismicLink, createPrismicLink);
-});
+it("PrismicLink is a temporary alias for createPrismicLink", () => {
+	expect(PrismicLink).toBe(createPrismicLink)
+})
