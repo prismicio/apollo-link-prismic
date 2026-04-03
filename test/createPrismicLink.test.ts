@@ -1,5 +1,5 @@
 import {
-	ApolloLink,
+	type ApolloLink,
 	execute,
 	type FetchResult,
 	gql,
