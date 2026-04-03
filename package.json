@@ -3,8 +3,8 @@
 	"version": "1.1.2",
 	"description": "Apollo link for Prismic",
 	"keywords": [
-		"graphql",
 		"apollo",
+		"graphql",
 		"link",
 		"prismic"
 	],
@@ -12,75 +12,60 @@
 	"bugs": {
 		"url": "https://github.com/prismicio/apollo-link-prismic/issues"
 	},
+	"license": "Apache-2.0",
+	"author": "Prismic <contact@prismic.io> (https://prismic.io)",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/prismicio/apollo-link-prismic.git"
 	},
-	"license": "Apache-2.0",
-	"author": "Prismic <contact@prismic.io> (https://prismic.io)",
+	"files": [
+		"./dist",
+		"./src"
+	],
+	"type": "module",
 	"sideEffects": false,
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.js",
+	"types": "./dist/index.d.cts",
 	"exports": {
 		".": {
-			"require": "./dist/index.cjs",
-			"import": "./dist/index.js"
+			"import": "./dist/index.js",
+			"require": "./dist/index.cjs"
 		},
 		"./package.json": "./package.json"
 	},
-	"main": "dist/index.cjs",
-	"module": "dist/index.js",
-	"types": "dist/index.d.ts",
-	"files": [
-		"dist",
-		"src"
-	],
+	"publishConfig": {
+		"access": "public"
+	},
 	"scripts": {
-		"build": "siroc build",
-		"dev": "siroc build --watch",
-		"format": "prettier --write .",
-		"lint": "eslint --ext .js,.ts .",
+		"build": "tsdown",
+		"dev": "tsdown --watch",
+		"format": "oxfmt",
 		"prepare": "npm run build",
-		"release": "npm run test && standard-version && git push --follow-tags && npm run build && npm publish",
-		"release:alpha": "npm run test && standard-version --release-as major --prerelease alpha && git push --follow-tags && npm run build && npm publish --tag alpha",
-		"release:alpha:dry": "standard-version --release-as major --prerelease alpha --dry-run",
-		"release:dry": "standard-version --dry-run",
-		"size": "size-limit",
-		"test": "npm run lint && npm run unit && npm run build && npm run size",
-		"unit": "nyc --reporter=lcovonly --reporter=text --exclude-after-remap=false ava"
+		"lint": "oxlint --deny-warnings",
+		"types": "tsc --noEmit",
+		"unit": "vitest run --coverage",
+		"unit:watch": "vitest watch",
+		"test": "npm run lint && npm run types && npm run unit && npm run build"
 	},
 	"dependencies": {
 		"@prismicio/client": "^7.0.1"
 	},
 	"devDependencies": {
 		"@apollo/client": "^3.5.8",
-		"@size-limit/preset-small-lib": "^7.0.8",
-		"@types/node-fetch": "^2.6.0",
-		"@types/sinon": "^10.0.11",
-		"@typescript-eslint/eslint-plugin": "^5.12.0",
-		"@typescript-eslint/parser": "^5.12.0",
-		"ava": "^4.0.1",
-		"eslint": "^8.9.0",
-		"eslint-config-prettier": "^8.3.0",
-		"eslint-plugin-prettier": "^4.0.0",
-		"eslint-plugin-tsdoc": "^0.2.14",
+		"@types/node": "^25.5.2",
+		"@vitest/coverage-v8": "^4.1.2",
 		"graphql": "^16.3.0",
-		"node-fetch": "^2.6.7",
-		"nyc": "^15.1.0",
-		"prettier": "^2.5.1",
-		"prettier-plugin-jsdoc": "^0.3.30",
-		"sinon": "^13.0.1",
-		"siroc": "^0.16.0",
-		"size-limit": "^7.0.8",
-		"standard-version": "^9.3.2",
-		"ts-eager": "^2.0.2",
-		"typescript": "^4.5.5"
+		"oxfmt": "^0.43.0",
+		"oxlint": "^1.58.0",
+		"tsdown": "^0.21.7",
+		"typescript": "^6.0.2",
+		"vitest": "^4.1.2"
 	},
 	"peerDependencies": {
 		"@apollo/client": "^3"
 	},
 	"engines": {
-		"node": ">=12.7.0"
-	},
-	"publishConfig": {
-		"access": "public"
+		"node": ">=20"
 	}
 }

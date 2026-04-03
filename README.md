@@ -13,8 +13,8 @@ npm install apollo-link-prismic
 ## Usage
 
 ```typescript
-import { ApolloClient, InMemoryCache } from "@apollo/client";
-import { createPrismicLink } from "apollo-link-prismic";
+import { ApolloClient, InMemoryCache } from "@apollo/client"
+import { createPrismicLink } from "apollo-link-prismic"
 
 const apolloClient = new ApolloClient({
 	link: createPrismicLink({
@@ -23,7 +23,7 @@ const apolloClient = new ApolloClient({
 		accessToken: "YOUR_ACCESS_TOKEN",
 	}),
 	cache: new InMemoryCache(),
-});
+})
 ```
 
 ### Providing a `fetch` function
@@ -35,9 +35,9 @@ Environments like the browser, [Next.js](https://nextjs.org/), [Cloudflare Worke
 There are many libraries that can provide this function. The most common is [`node-fetch`](https://www.npmjs.com/package/node-fetch), which you would configure like this:
 
 ```typescript
-import { ApolloClient, InMemoryCache } from "@apollo/client";
-import { createPrismicLink } from "apollo-link-prismic";
-import fetch from "node-fetch";
+import { ApolloClient, InMemoryCache } from "@apollo/client"
+import { createPrismicLink } from "apollo-link-prismic"
+import fetch from "node-fetch"
 
 const apolloClient = new ApolloClient({
 	link: createPrismicLink({
@@ -47,7 +47,7 @@ const apolloClient = new ApolloClient({
 		fetch,
 	}),
 	cache: new InMemoryCache(),
-});
+})
 ```
 
 ### Installation with React Native
@@ -65,7 +65,7 @@ Next, import the polyfill in your app’s entry file (typically this is App.js o
 ```javascript
 // App.js or index.js
 
-import "react-native-url-polyfill/auto";
+import "react-native-url-polyfill/auto"
 ```
 
 `apollo-link-prismic` can now be used throughout your app.
