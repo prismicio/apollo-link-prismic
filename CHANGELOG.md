@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.3](https://github.com/prismicio/apollo-link-prismic/compare/v1.1.2...v1.1.3) (2026-04-03)
+
+
+### Bug Fixes
+
+* update @prismicio/client and graphql dependencies ([03f239c](https://github.com/prismicio/apollo-link-prismic/commit/03f239c721cf27e7793f6ae17660cd31f5c8d7ef))
+
 ### [1.1.2](https://github.com/prismicio/apollo-link-prismic/compare/v1.1.1...v1.1.2) (2023-06-06)
 
 ### Documentation
